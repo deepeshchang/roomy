@@ -1,0 +1,93 @@
+name: VideoCompressor
+options:
+  bundleIdPrefix: com.deepeshchang
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+
+targets:
+  VideoCompressor:
+    type: application
+    platform: iOS
+    sources:
+      - VideoCompressor
+    info:
+      path: VideoCompressor/Info.plist
+      properties:
+        BGTaskSchedulerPermittedIdentifiers:
+          - com.deepeshchang.VideoCompressor.batch.*
+        UIBackgroundModes:
+          - processing
+        UILaunchScreen:
+          UIImageName: LaunchLogo
+          UIColorName: LaunchBackground
+          UIImageRespectsSafeAreaInsets: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.deepeshchang.VideoCompressor
+        DEVELOPMENT_TEAM: ""
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: true
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        INFOPLIST_KEY_CFBundleDisplayName: Roomy
+        INFOPLIST_KEY_NSPhotoLibraryUsageDescription: Roomy shows your videos and photos largest-first so you can compress the biggest ones. Nothing is uploaded, and Roomy only deletes an original when you ask it to.
+        INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription: Roomy saves compressed copies to Photos as new items, keeping their original date and location.
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        TARGETED_DEVICE_FAMILY: "1,2"
+
+  RoomyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - UITests
+    dependencies:
+      - target: VideoCompressor
+    settings:
+      base:
+        DEVELOPMENT_TEAM: ""
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: true
+
+  VideoCompressorTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests
+    dependencies:
+      - target: VideoCompressor
+    settings:
+      base:
+        DEVELOPMENT_TEAM: ""
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: true
+
+# Explicit schemes so ./run-tests.sh stays unit-only; the UI flow runs on its own:
+#   xcodebuild test -scheme RoomyUITests -destination 'platform=iOS Simulator,name=Doctaz-iPhone17'
+schemes:
+  VideoCompressor:
+    build:
+      targets:
+        VideoCompressor: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - VideoCompressorTests
+  RoomyUITests:
+    build:
+      targets:
+        VideoCompressor: all
+        RoomyUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - RoomyUITests
